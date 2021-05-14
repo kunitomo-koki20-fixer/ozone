@@ -41,7 +41,7 @@ def record(chrome, month, url, project, headless):
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(PASSWORDFIELD)).send_keys(PWD)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
+            WebDriverWait(driver, 60).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
         print("ログイン成功")
 
         m = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(MONTH))
