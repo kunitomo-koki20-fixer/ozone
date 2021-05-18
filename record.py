@@ -57,7 +57,7 @@ def record(chrome, month, url, project, headless):
                 working_time =  WebDriverWait(driver, 1).until(EC.presence_of_element_located(time_locator)).find_element_by_tag_name("span")
             except:
                 break
-            if str(working_time.get_attribute("style")).startswith("color: rgb(255, 0, 0)"):
+            if str(working_time.get_attribute("style")).startswith("color: rgb(255, 0, 0)") and working_time.text != "":
                 date_locator = (By.ID, DATE + str(i))
                 date = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(date_locator))
                 date.click()

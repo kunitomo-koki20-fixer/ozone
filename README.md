@@ -1,6 +1,7 @@
 # ozone
 
 ## Installation
+
 Requires Python3 and Google Chrome.
 
 `pip3 install -r requirements.txt`
@@ -9,10 +10,15 @@ If you want to use keyring on Linux, I recommend installing this first. For deta
 
 `sudo apt install python-dbus`
 
-## configuration
+## Configuration
 
 Write your configuration options to record.py or enter as the command line option.
 
 For password, I recommend using [keyring](https://github.com/jaraco/keyring) so you won't have to enter each time.
 Use this command to set.
+
 `keyring set https://login.microsoftonline.com your-mail`
+
+## Example command
+
+`record.py -e 'mail' -m '2021/05' -p 'project' -u 'https://example.com' -P`
