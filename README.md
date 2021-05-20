@@ -22,23 +22,3 @@ Use this command to set.
 ## Example command
 
 `record.py -e 'mail' -m '2021/05' -p 'project' -u 'https://example.com' -P`
-
-## Register Alias
-
-Copy & Paste below commands to your ~/.bashrc, ~/.zshrc or etc..
-
-```bash
-alias ozone-attend="python3 ~/{folder path to this project}/ozone/attend.py -e {your email} -u '{attendance url}'"
-alias ozone-leave="python3 ~/{folder path to this project}/ozone/leave.py -e {your email} -u '{attendance url}'"
-
-function ozone-record(){
-while getopts m:p: OPT
-do
-    case $OPT in
-        p) month=$OPTARG;;
-        m) project=$OPTARG;;
-    esac
-done
-python3 ~/{folder path to this project}/ozone/record.py -e {your email} -m $month -p $project -u '{manpower management url}'
-}
-```
