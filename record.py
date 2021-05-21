@@ -65,7 +65,7 @@ def record(chrome, month, url, project, headless):
                 if WebDriverWait(driver, 10).until(EC.presence_of_element_located(MESSAGE)).text == "":
                     WebDriverWait(driver, 10).until(EC.element_to_be_clickable(PROJECT)).send_keys(project)
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located(WORK)).find_element_by_tag_name("input").send_keys(working_time.text)
-                    sleep(0.5)
+                    sleep(1)
                     WebDriverWait(driver, 10).until(EC.element_to_be_clickable(REGISTER)).click()
                     WebDriverWait(driver, 10).until(EC.element_to_be_clickable(OK)).click()
                     print(date.text + "の工数入力完了")
