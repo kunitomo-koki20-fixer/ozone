@@ -21,4 +21,8 @@ Use this command to set.
 
 ## Example command
 
-`record.py -e 'mail' -m '2021/05' -p 'project' -u 'https://example.com' -P`
+To Enter man-power time:
+`python3 record.py -e 'mail' -m '2021/05' -p 'project' -u 'https://example.com/man-power' -P`
+
+To punch in:
+`python3 punch.py -t 'in' -e 'mail' -u 'https://example.com' -H`

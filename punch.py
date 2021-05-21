@@ -16,8 +16,9 @@ PASSWORDFIELD = (By.ID, "i0118")
 NEXTBUTTON = (By.ID, "idSIButton9")
 
 ATTEND_BTN = (By.ID, "btn03")
+LEAVE_BTN = (By.ID, "btn04")
 
-def attend(chrome, url, headless):
+def punch(chrome, url, headless, out):
     options = webdriver.ChromeOptions()
     options.binary_location = chrome
     if headless : options.add_argument('--headless')
@@ -28,15 +29,21 @@ def attend(chrome, url, headless):
         print("ログイン中...")
         cur_url = driver.current_url
         if cur_url.startswith(LOGINURL):
-            WebDriverWait(driver, 100).until(EC.element_to_be_clickable(EMAILFIELD)).send_keys(EMAIL)
-            WebDriverWait(driver, 100).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
-            WebDriverWait(driver, 100).until(EC.element_to_be_clickable(PASSWORDFIELD)).send_keys(PWD)
-            WebDriverWait(driver, 100).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(EMAILFIELD)).send_keys(EMAIL)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(PASSWORDFIELD)).send_keys(PWD)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
             WebDriverWait(driver, 60).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
         print("ログイン成功")
 
-        WebDriverWait(driver, 100).until(EC.presence_of_element_located(ATTEND_BTN)).find_element_by_tag_name("a").click()
-        sleep(2)
+        if(out):
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(LEAVE_BTN)).find_element_by_tag_name("a").click()
+            sleep(2)
+            print("退勤成功")
+        else:
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(ATTEND_BTN)).find_element_by_tag_name("a").click()
+            sleep(2)
+            print("出勤成功")
 
     finally:
         print("終了しています...")
@@ -48,6 +55,7 @@ def get_option():
     argparser.add_argument('-e', '--email', type=str,default=email, help='ログインするメアド')
     argparser.add_argument('-H', '--headless', action='store_true', help='Chromeを非表示にするかどうか')
     argparser.add_argument('-P', '--password', action='store_true', help='パスワードを要求するかどうか')
+    argparser.add_argument('-t', '--type', type=str, default='', help='出勤もしくは退勤 ("in" もしくは "out")')
     argparser.add_argument('-u', '--url', type=str, default=url, help='出勤・退勤ページのURL')
     return argparser.parse_args()
 
@@ -68,6 +76,12 @@ if __name__ == '__main__':
     else:
         pwd = keyring.get_password(LOGINURL, EMAIL)
     PWD = pwd
-
     url = args.url
-    attend(chrome,url,args.headless)
+
+    if args.type == 'in':
+        punch(chrome,url,args.headless,False)
+    elif args.type == 'out':
+        punch(chrome,url,args.headless,True)
+    else:
+        print("出勤もしくは退勤を選択してください")
+
