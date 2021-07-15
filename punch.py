@@ -22,7 +22,7 @@ def punch(chrome, url, headless, out):
     options = webdriver.ChromeOptions()
     options.binary_location = chrome
     if headless : options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options, service_log_path="chromedriver.log")
+    driver = webdriver.Chrome(options=options)
 
     try:
         driver.get(url)

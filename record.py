@@ -30,24 +30,24 @@ def record(chrome, month, url, project, headless):
     options = webdriver.ChromeOptions()
     options.binary_location = chrome
     if headless : options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options, service_log_path="chromedriver.log")
+    driver = webdriver.Chrome(options=options)
 
     try:
         driver.get(url)
         print("ログイン中...")
         cur_url = driver.current_url
         if cur_url.startswith(LOGINURL):
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(EMAILFIELD)).send_keys(EMAIL)
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(PASSWORDFIELD)).send_keys(PWD)
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable(EMAILFIELD)).send_keys(EMAIL)
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable(PASSWORDFIELD)).send_keys(PWD)
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
             WebDriverWait(driver, 60).until(EC.element_to_be_clickable(NEXTBUTTON)).click()
         print("ログイン成功")
 
-        m = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(MONTH))
+        m = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(MONTH))
         m.clear()
         m.send_keys(month)
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(SEARCH)).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable(SEARCH)).click()
         sleep(0.5)
 
         i = 1
@@ -59,19 +59,24 @@ def record(chrome, month, url, project, headless):
                 break
             if str(working_time.get_attribute("style")).startswith("color: rgb(255, 0, 0)") and working_time.text != "":
                 date_locator = (By.ID, DATE + str(i))
-                date = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(date_locator))
+                sleep(1)
+                date = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(date_locator)).find_element_by_tag_name("a")
+                dateText = date.find_element_by_tag_name("span").text
                 date.click()
                 sleep(0.5)
-                if WebDriverWait(driver, 10).until(EC.presence_of_element_located(MESSAGE)).text == "":
-                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable(PROJECT)).send_keys(project)
-                    WebDriverWait(driver, 10).until(EC.presence_of_element_located(WORK)).find_element_by_tag_name("input").send_keys(working_time.text)
-                    sleep(1)
-                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable(REGISTER)).click()
-                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable(OK)).click()
-                    print(date.text + "の工数入力完了")
+                if WebDriverWait(driver, 20).until(EC.presence_of_element_located(MESSAGE)).text == "":
+                    sleep(0.7)
+                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable(PROJECT)).send_keys(project)
+                    sleep(0.7)
+                    WebDriverWait(driver, 20).until(EC.presence_of_element_located(WORK)).find_element_by_tag_name("input").send_keys(working_time.text)
+                    sleep(0.7)
+                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable(REGISTER)).click()
+                    sleep(0.7)
+                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable(OK)).click()
+                    print(dateText + "の工数入力完了")
                 else:
-                    print(date.text + "の工数入力はスキップしました。")
-                WebDriverWait(driver, 10).until(EC.element_to_be_clickable(CLOSE)).click()
+                    print(dateText + "の工数入力はスキップしました。")
+                WebDriverWait(driver, 20).until(EC.element_to_be_clickable(CLOSE)).click()
             i+=1
     finally:
         print("終了しています...")
