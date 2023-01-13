@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-import chromedriver_binary
 from getpass import getpass
 import keyring
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,6 +6,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 LOGINURL = 'https://login.microsoftonline.com'
@@ -22,7 +23,8 @@ def punch(chrome, url, headless, out):
     options = webdriver.ChromeOptions()
     options.binary_location = chrome
     if headless : options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
+    service = ChromeService(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         driver.get(url)
@@ -37,11 +39,11 @@ def punch(chrome, url, headless, out):
         print("ログイン成功")
 
         if(out):
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located(LEAVE_BTN)).find_element_by_tag_name("a").click()
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(LEAVE_BTN)).find_element(By.TAG_NAME,"a").click()
             sleep(2)
             print("退勤成功")
         else:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located(ATTEND_BTN)).find_element_by_tag_name("a").click()
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(ATTEND_BTN)).find_element(By.TAG_NAME,"a").click()
             sleep(2)
             print("出勤成功")
 

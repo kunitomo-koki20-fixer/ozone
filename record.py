@@ -1,12 +1,13 @@
 from argparse import ArgumentParser
-import chromedriver_binary
+from time import sleep
 from getpass import getpass
 import keyring
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from time import sleep
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 LOGINURL = 'https://login.microsoftonline.com'
@@ -30,7 +31,8 @@ def record(chrome, month, url, project, headless):
     options = webdriver.ChromeOptions()
     options.binary_location = chrome
     if headless : options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
+    service = ChromeService(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         driver.get(url)
@@ -48,30 +50,32 @@ def record(chrome, month, url, project, headless):
         m.clear()
         m.send_keys(month)
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable(SEARCH)).click()
-        sleep(0.5)
+        sleep(1)
 
         i = 1
         while True:
             time_locator = (By.ID, TIME + str(i))
             try:
-                working_time =  WebDriverWait(driver, 1).until(EC.presence_of_element_located(time_locator)).find_element_by_tag_name("span")
+                working_time =  WebDriverWait(driver, 10).until(EC.presence_of_element_located(time_locator)).find_element(By.TAG_NAME,"span")
             except:
                 break
-            if str(working_time.get_attribute("style")).startswith("color: rgb(255, 0, 0)") and working_time.text != "":
+            style = str(working_time.get_attribute("style"))
+            working_text = working_time.text
+            if style.startswith("color: rgb(255, 0, 0)") and working_text != "":
                 date_locator = (By.ID, DATE + str(i))
                 sleep(1)
-                date = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(date_locator)).find_element_by_tag_name("a")
-                dateText = date.find_element_by_tag_name("span").text
+                date = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(date_locator)).find_element(By.TAG_NAME,"a")
+                dateText = date.find_element(By.TAG_NAME,"span").text
                 date.click()
                 sleep(0.5)
                 if WebDriverWait(driver, 20).until(EC.presence_of_element_located(MESSAGE)).text == "":
-                    sleep(0.7)
+                    sleep(0.8)
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(PROJECT)).send_keys(project)
-                    sleep(0.7)
-                    WebDriverWait(driver, 20).until(EC.presence_of_element_located(WORK)).find_element_by_tag_name("input").send_keys(working_time.text)
-                    sleep(0.7)
+                    sleep(1)
+                    WebDriverWait(driver, 20).until(EC.presence_of_element_located(WORK)).find_element(By.TAG_NAME,"input").send_keys(working_text)
+                    sleep(0.8)
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(REGISTER)).click()
-                    sleep(0.7)
+                    sleep(0.8)
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(OK)).click()
                     print(dateText + "の工数入力完了")
                 else:
