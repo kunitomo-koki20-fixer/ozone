@@ -50,7 +50,7 @@ def record(chrome, month, url, project, headless):
         m.clear()
         m.send_keys(month)
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable(SEARCH)).click()
-        sleep(1)
+        sleep(3)
 
         i = 1
         while True:
@@ -73,7 +73,7 @@ def record(chrome, month, url, project, headless):
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(PROJECT)).send_keys(project)
                     sleep(1)
                     WebDriverWait(driver, 20).until(EC.presence_of_element_located(WORK)).find_element(By.TAG_NAME,"input").send_keys(working_text)
-                    sleep(0.8)
+                    sleep(1)
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(REGISTER)).click()
                     sleep(0.8)
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable(OK)).click()
